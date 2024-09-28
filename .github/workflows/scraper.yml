@@ -1,0 +1,53 @@
+name: Daily Scraper
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # Runs daily at 09:00 UTC
+  workflow_dispatch:  # Allows you to manually trigger the workflow
+
+jobs:
+  scrape_apps:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app_url: [
+          "https://apps.apple.com/us/app/hims-telehealth-for-men/id1455690574",
+          "https://apps.apple.com/us/app/hers-womens-healthcare/id1623878709",
+          "https://apps.apple.com/us/app/ro/id1585858911",
+          "https://apps.apple.com/us/app/push-health-telehealth-app/id950510633",
+          "https://apps.apple.com/us/app/plushcare-online-doctor/id955183607"
+        ]  # List of app URLs to scrape
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: data-branch  # Checkout the data branch to store results here
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4 lxml
+
+      # Step 4: Run the Python scraper for each app URL
+      - name: Run scraper
+        run: |
+          python run_scraper.py --app_url "${{ matrix.app_url }}"
+
+      # Step 5: Commit and push the changes to the data branch
+      - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add apps_ranking.csv
+          git commit -m "Update scraped data for ${{ matrix.app_url }} on $(date +"%Y-%m-%d %H:%M:%S")"
+          git push https://x-access-token:${{ secrets.ACTIONS_TOKEN }}@github.com/tommasogritti/rank-gazer.git HEAD:data-branch
