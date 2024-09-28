@@ -12,14 +12,14 @@ The scraped data is appended to a CSV file stored in a separate branch (`data-br
 
 - Scrapes data from multiple App Store app pages.
 - Runs automatically every day at 09:00 UTC.
-- Stores data in a CSV file (`scraped_data.csv`) in the `data-branch`.
+- Stores data in a CSV file (`apps_ranking.csv`) in the `data-branch`.
 - Easily extendable to scrape additional apps by editing the workflow matrix.
 
 ## How It Works
 
 1. The **GitHub Actions workflow** is configured to run daily using a cron job (`cron: '0 9 * * *'`) or can be manually triggered from the "Actions" tab in the repository.
 2. For each app URL defined in the workflow, the script will scrape the app's ranking, star rating, and the total number of reviews.
-3. The scraped data is then appended to the `scraped_data.csv` file in the `data-branch`.
+3. The scraped data is then appended to the `apps_ranking.csv` file in the `data-branch`.
 4. Each job runs in parallel for faster scraping of multiple apps.
 
 ## Running the Scraper Locally
@@ -49,7 +49,7 @@ pip install -r requirements.txt
 python run_scraper.py --app_url "https://apps.apple.com/us/app/google/id284815942"
 ```
 
-4. **Check the output**: The scraped data will be appended to `scraped_data.csv`, which will be created in the local directory if it doesn't already exist.
+4. **Check the output**: The scraped data will be appended to `apps_ranking.csv`, which will be created in the local directory if it doesn't already exist.
 
 
 ## Setup
