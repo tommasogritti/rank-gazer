@@ -43,9 +43,11 @@ jobs:
 
       # Step 5: Commit and push the changes to the data branch
       - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add apps_ranking.csv
+          git add scraped_data.csv
           git commit -m "Update scraped data for ${{ matrix.app_url }} on $(date +"%Y-%m-%d %H:%M:%S")"
-          git push origin data-branch
+          git push https://x-access-token:${{ secrets.ACTIONS_TOKEN }}@github.com/tommasogritti/rank-gazer.git HEAD:data-branch
