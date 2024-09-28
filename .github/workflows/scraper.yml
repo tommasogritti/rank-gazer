@@ -44,11 +44,18 @@ jobs:
         run: |
           python run_scraper.py --app_url "${{ matrix.app_url }}"
 
-      # Step 5: Commit and push the changes to the data branch
-      - name: Commit and push changes
+      # Step 5: Commit, pull, and push the changes to the data branch
+      - name: Commit, pull, and push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Add and commit changes
           git add apps_ranking.csv
           git commit -m "Update scraped data for ${{ matrix.app_url }} on $(date +"%Y-%m-%d %H:%M:%S")"
+          
+          # Pull the latest changes from the data-branch to avoid conflicts
+          git pull --rebase origin data-branch
+          
+          # Push the changes
           git push origin HEAD:data-branch
