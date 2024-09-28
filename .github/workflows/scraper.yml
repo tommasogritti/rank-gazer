@@ -11,7 +11,11 @@ jobs:
     strategy:
       matrix:
         app_url: [
-          "https://apps.apple.com/us/app/google/id284815942",
+          "https://apps.apple.com/us/app/hims-telehealth-for-men/id1455690574",
+          "https://apps.apple.com/us/app/hers-womens-healthcare/id1623878709",
+          "https://apps.apple.com/us/app/ro/id1585858911",
+          "https://apps.apple.com/us/app/push-health-telehealth-app/id950510633",
+          "https://apps.apple.com/us/app/plushcare-online-doctor/id955183607"
         ]  # List of app URLs to scrape
 
     steps:
