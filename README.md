@@ -1,5 +1,7 @@
 # Rank Gazer: Daily App Store Ranking Scraper
 
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/tommasogritti/rank-gazer/scraper.yml?branch=main)
+
 This repository contains a Python script and a GitHub Actions workflow that automates the process of scraping data from multiple Apple App Store app pages. The workflow runs daily at a predefined time (09:00 UTC) or can be triggered manually, and it collects information such as:
 
 - App ranking in the Medical category.
