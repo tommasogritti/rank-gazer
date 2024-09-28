@@ -1,6 +1,6 @@
 # Rank Gazer: Daily App Store Ranking Scraper
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/tommasogritti/rank-gazer/scraper.yml?branch=main)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/tommasogritti/rank-gazer/scraper.yml?branch=main&label=Scraper%20Status)
 
 This repository contains a Python script and a GitHub Actions workflow that automates the process of scraping data from multiple Apple App Store app pages. The workflow runs daily at a predefined time (09:00 UTC) or can be triggered manually, and it collects information such as:
 
@@ -15,7 +15,7 @@ The scraped data is appended to a CSV file stored in a separate branch (`data-br
 - Scrapes data from multiple App Store app pages.
 - Runs automatically every day at 09:00 UTC.
 - Stores data in a CSV file (`apps_ranking.csv`) in the `data-branch`.
-- Easily extendable to scrape additional apps by editing the workflow matrix.
+- Easily extendable to scrape additional apps by editing the workflow.
 
 ## How It Works
 
@@ -63,16 +63,12 @@ python run_scraper.py --app_url "https://apps.apple.com/us/app/google/id28481594
 
 ### Workflow Configuration
 
-The workflow is defined in `.github/workflows/scraper.yml`. The workflow uses a matrix strategy to run the scraping job for multiple app URLs in parallel.
-
-To modify the list of apps being scraped:
-1. Edit the `matrix.app_url` section in the `.github/workflows/scraper.yml` file.
-2. Add or remove app URLs in the list:
+The workflow is defined in `.github/workflows/scraper.yml` and will scrape data from the app URLs defined in the `APP_URLS` environment variable. 
+To modify the list of apps being scraped, add or remove app URLs in the list:
    ```yaml
-   matrix:
-     app_url: [
-       "https://apps.apple.com/us/app/google/id284815942",
-     ]
+   APP_URLS: |
+       https://apps.apple.com/us/app/google/id284815942
+  ```
 
 ### Running the Workflow
 There are two ways to run the scraping workflow:
@@ -84,7 +80,7 @@ There are two ways to run the scraping workflow:
     - Click on the "Run workflow" button to start the scraper immediately.
 
 ### Modifying the Scraper Script
-The Python script `run_scraper.py` is designed to take an `--app_url` argument, which is passed by the GitHub Actions workflow for each app in the matrix. The script scrapes the app's ranking, rating, and total number of reviews and appends it to the CSV file.
+The Python script `run_scraper.py` is designed to take an `--app_urls` argument, which is passed by the GitHub Actions workflow . The script scrapes the app's ranking, rating, and total number of reviews and appends it to the CSV file.
 
 Feel free to modify the scraping logic or add additional data points to be extracted as needed.
 
