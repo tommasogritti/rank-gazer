@@ -1,0 +1,60 @@
+name: Daily Scraper
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # Runs daily at 09:00 UTC
+  workflow_dispatch:  # Allows you to manually trigger the workflow
+
+permissions:
+  contents: write  # Ensure the GITHUB_TOKEN has write access to the repo
+
+jobs:
+  scrape_apps:
+    runs-on: ubuntu-latest
+
+    env:
+      # List of app URLs to scrape
+      APP_URLS: |
+        https://apps.apple.com/us/app/hims-telehealth-for-men/id1455690574
+        https://apps.apple.com/us/app/hers-womens-healthcare/id1623878709
+        https://apps.apple.com/us/app/ro/id1585858911
+        https://apps.apple.com/us/app/push-health-telehealth-app/id950510633
+        https://apps.apple.com/us/app/plushcare-online-doctor/id955183607
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: data-branch  # Checkout the data branch to store results here
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 4: Run the Python scraper for each app URL
+      - name: Run scraper
+        run: |
+          APP_URLS_LIST=($APP_URLS)
+          APP_URLS_COUNT=${#APP_URLS_LIST[@]}
+          echo "Number of app URLs: $APP_URLS_COUNT"
+          python run_scraper.py --app_urls $APP_URLS
+
+      # Step 5: Commit and push the changes to the data branch
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add apps_ranking.csv
+          git commit -m "Update scraped data for $APP_URLS_COUNT URLs on $(date +"%Y-%m-%d %H:%M:%S")"
+          
+          # Push the changes
+          git push origin HEAD:data-branch
