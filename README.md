@@ -1,4 +1,4 @@
-# Rabk Gazer: Daily App Store Ranking Scraper
+# Rank Gazer: Daily App Store Ranking Scraper
 
 This repository contains a Python script and a GitHub Actions workflow that automates the process of scraping data from multiple Apple App Store app pages. The workflow runs daily at a predefined time (09:00 UTC) or can be triggered manually, and it collects information such as:
 
