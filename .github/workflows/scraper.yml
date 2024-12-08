@@ -44,7 +44,7 @@ jobs:
       # Step 4: Run the Python scraper for each app URL
       - name: Run scraper
         run: |
-          APP_URLS_LIST=($APP_URLS)
+          IFS=$'\n' read -r -d '' -a APP_URLS_LIST <<< "$APP_URLS"
           APP_URLS_COUNT=${#APP_URLS_LIST[@]}
           echo "Number of app URLs: $APP_URLS_COUNT"
           python run_scraper.py --app_urls $APP_URLS
