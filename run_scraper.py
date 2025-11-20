@@ -1,5 +1,6 @@
 import argparse
 import csv
+import json
 import os
 from datetime import datetime
 from typing import List
@@ -26,15 +27,18 @@ def scrape_data(app_url: str) -> List[str]:
     )
     ranking = ranking_tag.get_text(strip=True) if ranking_tag else "N/A"
 
-    # Extracting star rating
-    rating = soup.find(
-        "span", {"class": "we-customer-ratings__averages__display"}
-    ).get_text(strip=True)
-
-    # Extracting total number of ratings
-    num_ratings = soup.find("div", {"class": "we-customer-ratings__count"}).get_text(
-        strip=True
+    # Extract rating and num_ratings from JSON-LD
+    script = soup.find(
+        "script", {"id": "software-application", "type": "application/ld+json"}
     )
+    if script:
+        data = json.loads(script.string)
+        aggregate_rating = data.get("aggregateRating", {})
+        rating = str(aggregate_rating.get("ratingValue", "N/A"))
+        num_ratings = str(aggregate_rating.get("reviewCount", "N/A"))
+    else:
+        rating = "N/A"
+        num_ratings = "N/A"
 
     # Get the current date and time
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
